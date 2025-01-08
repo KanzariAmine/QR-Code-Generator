@@ -1,5 +1,11 @@
 deployment:
   tasks:
+    # Define directories to delete
+    - export NESTJS_DIR=/home/kanpower/repositories/app_to_test
+
+     # Delete .git directories if they exist
+    - /bin/rm -rf $NESTJS_DIR/.git
+    
     # Define deployment and build paths
     - export DEPLOYPATH=/home/kanpower/public_html
     - export BUILDPATH=dist
