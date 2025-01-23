@@ -118,13 +118,6 @@ const FileUploader = () => {
     setQrCodePath("");
   };
 
-  const handleClick = (message) => {
-    triggerToast({
-      message,
-      duration: 3000,
-    });
-  };
-
   return (
     <>
       <Layout>
@@ -232,10 +225,6 @@ const FileUploader = () => {
                 }}
               >
                 Créer QR Code
-              </button>
-
-              <button onClick={() => handleClick("AMINE Hello")}>
-                Trigger Toast
               </button>
             </div>
 

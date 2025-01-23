@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import useToast from "../hooks/useToast";
 import Modal from "./Modal";
 import Portal from "./Portal";
-
 const FileList = ({ files, onDelete, onPreview }) => {
+  const { ToastComponent, triggerToast } = useToast("top-right");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filename, setFilename] = useState("");
-  const pdfFiles = files.filter((file) => file.endsWith(".pdf"));
+  const [pdfFiles, setPdfFiles] = useState([]);
+
+  useEffect(() => {
+    if (Array.isArray(files)) {
+      setPdfFiles(files.filter((file) => file.endsWith(".pdf")));
+    } else {
+      // Handle the case where files is an object (no files)
+      triggerToast({
+        message: files.message,
+        duration: 3000,
+        type: "successes",
+      });
+    }
+  }, []);
 
   const openModal = (filename) => {
     setFilename(filename);
@@ -60,6 +74,7 @@ const FileList = ({ files, onDelete, onPreview }) => {
           </p>
         </Modal>
       </Portal>
+      {ToastComponent}
     </div>
   );
 };
