@@ -5,6 +5,7 @@ const useToast = () => {
   const [toast, setToast] = useState(null);
 
   const onClose = () => setToast(null);
+
   const triggerToast = useCallback((toastProps) => {
     setToast(toastProps);
     setTimeout(() => {

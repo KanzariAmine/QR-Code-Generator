@@ -11,7 +11,7 @@ const Login = () => {
 
     try {
       await login(formData);
-      navigate("/protected/generate_qr_code"); // Redirect after login
+      navigate("/protected/authorization_code"); // Redirect after login
     } catch (error) {
       console.error('"Invalid username or password"', error);
     }

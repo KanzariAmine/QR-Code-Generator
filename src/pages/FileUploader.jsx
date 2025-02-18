@@ -6,9 +6,9 @@ import FileInput from "../components/FileInput";
 import FileList from "../components/FileList";
 import Input from "../components/Input";
 import MyPDFDocument from "../components/MyPDFDocument";
+import Spinner from "../components/Spinner";
 import useToast from "../hooks/useToast";
 import Layout from "../layout/Layout";
-
 const FileUploader = () => {
   const inputRef = useRef();
   const { ToastComponent, triggerToast } = useToast("top-right");
@@ -17,6 +17,8 @@ const FileUploader = () => {
   const [fileName, setFileName] = useState("");
   const [qrCodePath, setQrCodePath] = useState("");
   const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [sharedLinkState, setSharedLinkState] = useState("");
   const [inputValue, setInputValue] = useState({
     nom_project: "",
     email: "",
@@ -26,8 +28,19 @@ const FileUploader = () => {
 
   const getAllFiles = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_URL}/file-upload/allFiles`
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_URL}all-file`,
+        {
+          path: "",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${
+              localStorage.getItem("access_token") || ""
+            }`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       setAllFiles(response.data);
     } catch (error) {
@@ -43,20 +56,21 @@ const FileUploader = () => {
     setFile(evt.target.files[0]);
   };
 
-  const submitFile = async () => {
-    const token = localStorage.getItem("token");
-    if (!file) return;
-    setFileName(file.name);
+  const saveFile = async () => {
     const formData = new FormData();
+    formData.append("path", "");
     formData.append("file", file);
+
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_BASE_URL}/file-upload/upload`,
+        `${import.meta.env.VITE_APP_BASE_URL}upload`,
         formData,
         {
           headers: {
+            Authorization: `Bearer ${
+              localStorage.getItem("access_token") || ""
+            }`,
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
           },
           onUploadProgress: (progressEvent) => {
             const percentage = Math.round(
@@ -67,11 +81,92 @@ const FileUploader = () => {
         }
       );
 
-      setQrCodePath(response.data?.qrCodeUrl);
-      triggerToast({
-        message: response.data.message,
+      const sharedLinK = await getSharedLink(response?.data?.path_display);
+      return sharedLinK;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getSharedLink = async (filename) => {
+    const body = {
+      path: filename,
+    };
+    try {
+      setQrCodePath("");
+      setLoading(true);
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_URL}shared-link`,
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              localStorage.getItem("access_token") || ""
+            }`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setLoading(false);
+      setSharedLinkState(response?.data);
+      getAllFiles();
+      return response?.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const generateQrCode = async (fileLink) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}generate-qr-code`,
+        {
+          params: {
+            data: fileLink,
+          },
+        }
+      );
+
+      return response?.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const submitFile = async () => {
+    const token = localStorage.getItem("token");
+    if (!file) return;
+    setFileName(file.name);
+    const formData = new FormData();
+
+    try {
+      const fileUrl = await saveFile();
+      const qRCodeUrl = await generateQrCode(fileUrl);
+
+      // const response = await axios.post(
+      //   `${import.meta.env.VITE_APP_BASE_URL}/file-upload/upload`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //       Authorization: `Bearer ${
+      //         localStorage.getItem("access_token") || ""
+      //       }`,
+      //     },
+      //     onUploadProgress: (progressEvent) => {
+      //       const percentage = Math.round(
+      //         (progressEvent.loaded * 100) / progressEvent.total
+      //       );
+      //       setProgress(percentage);
+      //     },
+      //   }
+      // );
+
+      setQrCodePath(qRCodeUrl);
+      return triggerToast({
+        message: "QR Code généré avec succès",
         duration: 3000,
-        type: response.data?.qrCodeUrl ? "successes" : "error",
+        type: qRCodeUrl ? "successes" : "error",
       });
     } catch (error) {
       console.error(error);
@@ -88,30 +183,43 @@ const FileUploader = () => {
   };
 
   const handleDeleteFile = async (filename) => {
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_APP_BASE_URL}/file-upload/delete_file`,
+    const body = {
+      path: `/${filename}`,
+    };
 
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_URL}delete-file`,
+        body,
         {
-          params: {
-            filename,
+          headers: {
+            Authorization: `Bearer ${
+              localStorage.getItem("access_token") || ""
+            }`,
+            "Content-Type": "application/json",
           },
         }
       );
 
-      response.data.status === 200 &&
+      response.status === 201 &&
         triggerToast({
-          message: response.data.message,
+          message: `Le ficher ${filename} a été supprimé avec succès`,
           duration: 3000,
           type: "successes",
         });
+
+      getAllFiles();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handlePreview = (file) => {
-    setQrCodePath(`${import.meta.env.VITE_APP_BASE_URL}/uploads/${file}`);
+  const handlePreview = async (file) => {
+    const sharedLinK = await getSharedLink(file?.path_display);
+    const qRCodeUrl = await generateQrCode(sharedLinK);
+    setQrCodePath(qRCodeUrl);
+    window.open(sharedLinK, "_blank");
+    // setQrCodePath(`${import.meta.env.VITE_APP_BASE_URL}/uploads/${file}`);
   };
 
   const handleDeleteQrCode = () => {
@@ -123,8 +231,6 @@ const FileUploader = () => {
       <Layout>
         <div className="flex items-center justify-center min-h-screen mt-24">
           <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl  ">
-            {ToastComponent}
-
             <form className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Project Name */}
               <Input
@@ -184,8 +290,10 @@ const FileUploader = () => {
                 <div className="w-40 h-40 border border-dashed border-gray-300 flex items-center justify-center rounded-md">
                   {qrCodePath ? (
                     <img src={qrCodePath} />
-                  ) : (
+                  ) : !loading ? (
                     <p className="text-gray-400">QR Code</p>
+                  ) : (
+                    <Spinner />
                   )}
                 </div>
                 <div className="mt-4 w-full bg-amber-200 rounded-full h-2">
@@ -236,6 +344,7 @@ const FileUploader = () => {
           </div>
         </div>
       </Layout>
+      {ToastComponent}
     </>
   );
 };

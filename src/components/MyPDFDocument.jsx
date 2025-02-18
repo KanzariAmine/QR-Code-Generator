@@ -47,6 +47,10 @@ const MyPDFDocument = ({ imagePath, inputValue }) => {
       alignItems: "center",
       flexDirection: "row",
     },
+    title: {
+      fontWeight: "bold",
+      fontSize: 18,
+    },
   });
 
   return (
@@ -60,18 +64,18 @@ const MyPDFDocument = ({ imagePath, inputValue }) => {
           <View style={styles.bodyContainer}>
             <View style={styles.content}>
               <Text style={styles.text}>
-                <Text style={styles.bold}>Nom du Project:</Text>{" "}
+                <Text style={styles.title}>Nom du Project: </Text>{" "}
                 {inputValue.nom_project}
               </Text>
               <Text style={styles.text}>
-                <Text style={styles.bold}>Téléphone:</Text>
+                <Text style={styles.title}>Téléphone: </Text>
                 {inputValue.tel}
               </Text>
               <Text style={styles.text}>
-                <Text style={styles.bold}>Email:</Text> {inputValue.email}
+                <Text style={styles.title}>Email: </Text> {inputValue.email}
               </Text>
               <Text style={styles.text}>
-                <Text style={styles.bold}>Web:</Text> {inputValue.adresse_web}
+                <Text style={styles.title}>Web: </Text> {inputValue.adresse_web}
               </Text>
             </View>
 

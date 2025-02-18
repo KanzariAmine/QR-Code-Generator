@@ -1,6 +1,16 @@
 import React from "react";
 
-const Input = ({ label, inputType, placeholder, name, value, onChange }) => {
+const Input = ({
+  label,
+  inputType,
+  placeholder,
+  name,
+  value,
+  onChange,
+  width = "full", // default to 'full' (w-full in Tailwind)
+}) => {
+  // Ensure width is a valid Tailwind class
+  const widthClass = width === "full" ? "w-full" : `w-${width}`;
   return (
     <div>
       <label
@@ -10,7 +20,9 @@ const Input = ({ label, inputType, placeholder, name, value, onChange }) => {
         {label}
       </label>
       <div className="mt-2">
-        <div className="h-11 shadow-sm w-full flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2">
+        <div
+          className={`h-11 shadow-sm flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 ${widthClass}`}
+        >
           <input
             id="input-label"
             name={name}

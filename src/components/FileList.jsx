@@ -10,10 +10,10 @@ const FileList = ({ files, onDelete, onPreview }) => {
 
   useEffect(() => {
     if (Array.isArray(files)) {
-      setPdfFiles(files.filter((file) => file.endsWith(".pdf")));
+      setPdfFiles(files.filter((file) => console.log("file", file.name)));
     } else {
       // Handle the case where files is an object (no files)
-      triggerToast({
+      return triggerToast({
         message: files.message,
         duration: 3000,
         type: "successes",
@@ -22,24 +22,24 @@ const FileList = ({ files, onDelete, onPreview }) => {
   }, []);
 
   const openModal = (filename) => {
-    setFilename(filename);
+    setFilename(filename.name);
     setIsModalOpen(true);
   };
   const closeModal = () => setIsModalOpen(false);
   return (
     <div className="w-full mx-auto mt-6 mb-5">
       <h2 className="text-lg font-semibold mb-4">PDF File List</h2>
-      {pdfFiles.length > 0 ? (
+      {files.length > 0 ? (
         <ul className="space-y-2">
-          {pdfFiles.map((file, index) => (
+          {files.map((file) => (
             <li
-              key={index}
+              key={file.id}
               className="flex justify-between items-center bg-gray-100 p-3 rounded shadow"
             >
-              <span className="text-sm font-medium">{file}</span>
+              <span className="text-sm font-medium">{file.name}</span>
               <div className="flex space-x-2">
                 <button
-                  onClick={() => onPreview(`${file}-qrcode.png`)}
+                  onClick={() => onPreview(file)}
                   className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                   Preview
