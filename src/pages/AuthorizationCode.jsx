@@ -57,7 +57,7 @@ const AuthorizationCode = () => {
 
   return (
     <>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2/3">
         <form onSubmit={getHandleInput}>
           <Input
             placeholder="Enter Authorization Code"
