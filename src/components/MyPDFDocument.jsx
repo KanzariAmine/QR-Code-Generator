@@ -7,9 +7,10 @@ import {
   View,
 } from "@react-pdf/renderer";
 import React from "react";
-import Logo_Kanpower from "../assets/Logo_Kanpower.png";
+// import logo from "../assets/logo_kanpower.png";
 
 const MyPDFDocument = ({ imagePath, inputValue }) => {
+  const logo = "/Logo_Kanpower.png";
   // const { nom_project, email, tel, adresse_web } = inputValue;
   // Define styles for the PDF
   const styles = StyleSheet.create({
@@ -67,7 +68,7 @@ const MyPDFDocument = ({ imagePath, inputValue }) => {
         <View style={styles.container}>
           {/* Header */}
           <View style={styles.titleContainer}>
-            <Image src={Logo_Kanpower} />
+            <Image src={logo} />
           </View>
 
           {/* Contact Information */}
