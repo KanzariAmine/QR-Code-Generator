@@ -13,7 +13,7 @@ const Login = () => {
       await login(formData);
       navigate("/protected/authorization_code"); // Redirect after login
     } catch (error) {
-      console.error('"Invalid username or password"', error);
+      console.error("Invalid username or password", error);
     }
   };
 

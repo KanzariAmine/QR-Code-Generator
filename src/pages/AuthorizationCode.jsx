@@ -6,6 +6,7 @@ import useToast from "../hooks/useToast";
 const AuthorizationCode = () => {
   const navigate = useNavigate();
   const { ToastComponent, triggerToast } = useToast("top-right");
+  const [isRegex, setIsRegex] = React.useState(false);
 
   const navigation = () => {
     window.open(
@@ -16,9 +17,11 @@ const AuthorizationCode = () => {
 
   const getHandleInput = async (event) => {
     event.preventDefault();
-    const regex = /qEPxJbecduAAAAAAAAAA/;
+    const regex = /2q0ammJsGI8AAAAAAAAA/;
     const formData = Object.fromEntries(new FormData(event.target).entries());
+    setIsRegex(!regex.test(formData?.authorization_code));
 
+    console.log("isRegex", isRegex);
     if (!regex.test(formData?.authorization_code)) {
       return triggerToast({
         message: "Invalid Authorization Code",
@@ -74,8 +77,9 @@ const AuthorizationCode = () => {
               Get Access Token
             </button>
             <button
-              className="mt-7 w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition duration-200"
+              className={`mt-7 w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700 transition duration-200 disabled:opacity-50`}
               type="submit"
+              disabled={!isRegex}
             >
               OK
             </button>

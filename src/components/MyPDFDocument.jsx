@@ -7,6 +7,7 @@ import {
   View,
 } from "@react-pdf/renderer";
 import React from "react";
+import Logo_Kanpower from "../assets/Logo_Kanpower.png";
 
 const MyPDFDocument = ({ imagePath, inputValue }) => {
   // const { nom_project, email, tel, adresse_web } = inputValue;
@@ -51,6 +52,13 @@ const MyPDFDocument = ({ imagePath, inputValue }) => {
       fontWeight: "bold",
       fontSize: 18,
     },
+    titleContainer: {
+      with: 100,
+      height: 150,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
   });
 
   return (
@@ -58,7 +66,9 @@ const MyPDFDocument = ({ imagePath, inputValue }) => {
       <Page style={styles.page}>
         <View style={styles.container}>
           {/* Header */}
-          <Text style={styles.header}>Kanpower</Text>
+          <View style={styles.titleContainer}>
+            <Image src={Logo_Kanpower} />
+          </View>
 
           {/* Contact Information */}
           <View style={styles.bodyContainer}>

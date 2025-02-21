@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // Send credentials to the server to get a token
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_BASE_URL}/auth/login`,
+        `${import.meta.env.VITE_APP_BASE_AUTH_URL}auth/login`,
         formData,
         {
           header: {
