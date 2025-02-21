@@ -21,7 +21,6 @@ const AuthorizationCode = () => {
     const formData = Object.fromEntries(new FormData(event.target).entries());
     setIsRegex(!regex.test(formData?.authorization_code));
 
-    console.log("isRegex", isRegex);
     if (!regex.test(formData?.authorization_code)) {
       return triggerToast({
         message: "Invalid Authorization Code",
