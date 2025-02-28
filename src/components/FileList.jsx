@@ -28,7 +28,9 @@ const FileList = ({ files, onDelete, onPreview }) => {
   const closeModal = () => setIsModalOpen(false);
   return (
     <div className="w-full mx-auto mt-6 mb-5">
-      <h2 className="text-lg font-semibold mb-4">PDF File List</h2>
+      <h2 className="text-lg font-semibold mb-4 font-montserrat">
+        PDF File List
+      </h2>
       {files.length > 0 ? (
         <ul className="space-y-2">
           {files.map((file) => (

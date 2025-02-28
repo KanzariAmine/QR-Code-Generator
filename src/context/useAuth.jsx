@@ -37,32 +37,9 @@ export const AuthProvider = ({ children }) => {
     console.log("logout");
     localStorage.removeItem("token");
     localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
   };
-
-  // useEffect(() => {
-  //   const validateToken = async () => {
-  //     if (!token) return;
-
-  //     try {
-  //       const response = await axios.post(
-  //         "http://192.168.43.37:3000/validate-token",
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error("Invalid token");
-  //       }
-  //       setIsAuthenticated(true);
-  //     } catch (error) {
-  //       console.error("Token validation failed:", error);
-  //       logout(); // Clear invalid token
-  //     }
-  //   };
-  //   validateToken();
-  // }, [token]);
 
   return (
     <AuthContext.Provider value={{ token, login, logout }}>

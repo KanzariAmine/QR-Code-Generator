@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import useToast from "../hooks/useToast";
@@ -7,7 +7,8 @@ const AuthorizationCode = () => {
   const navigate = useNavigate();
   const { ToastComponent, triggerToast } = useToast("top-right");
   const [isRegex, setIsRegex] = React.useState(false);
-
+  const [authorizationCode, setAuthorizationCode] = useState("");
+  const regex = /2q0ammJsGI8AAAAAAAAA/;
   const navigation = () => {
     window.open(
       `${import.meta.env.VITE_APP_BASE_AUTH_URL}dropbox-auth/login`,
@@ -15,13 +16,17 @@ const AuthorizationCode = () => {
     );
   };
 
+  const handleOnChange = (evt) => {
+    const value = evt.target.value;
+    console.log("🚀 ~ handleOnChange ~ value:", value);
+    setAuthorizationCode(value);
+    setIsRegex(regex.test(value));
+  };
+
   const getHandleInput = async (event) => {
     event.preventDefault();
-    const regex = /2q0ammJsGI8AAAAAAAAA/;
-    const formData = Object.fromEntries(new FormData(event.target).entries());
-    setIsRegex(!regex.test(formData?.authorization_code));
 
-    if (!regex.test(formData?.authorization_code)) {
+    if (!isRegex) {
       return triggerToast({
         message: "Invalid Authorization Code",
         duration: 3000,
@@ -32,7 +37,7 @@ const AuthorizationCode = () => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_APP_BASE_AUTH_URL}dropbox-auth/callback`,
-        { params: { code: formData?.authorization_code } }
+        { params: { code: authorizationCode } }
       );
 
       if (response.data !== undefined) {
@@ -67,6 +72,7 @@ const AuthorizationCode = () => {
             label="Authorization Code"
             width="96"
             name="authorization_code"
+            onChange={handleOnChange}
           />
           <div className="flex  gap-4 justify-around align-center">
             <button

@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        montserrat: ["Montserrat", "sans-serif"],
+      },
       animation: {
         "fade-in-right": "fadeInRight 0.5s ease-out",
       },

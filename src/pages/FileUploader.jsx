@@ -9,6 +9,7 @@ import MyPDFDocument from "../components/MyPDFDocument";
 import Spinner from "../components/Spinner";
 import useToast from "../hooks/useToast";
 import Layout from "../layout/Layout";
+import { isEmptyObject } from "../util/index";
 const FileUploader = () => {
   const inputRef = useRef();
   const { ToastComponent, triggerToast } = useToast("top-right");
@@ -207,7 +208,8 @@ const FileUploader = () => {
           duration: 3000,
           type: "successes",
         });
-
+      setInputValue("");
+      setQrCodePath("");
       getAllFiles();
     } catch (error) {
       console.error(error);
@@ -255,8 +257,9 @@ const FileUploader = () => {
               {/* Phone */}
               <Input
                 label="Téléphone"
-                inputType="number"
+                inputType="phone"
                 placeholder="99 999 999"
+                pattern="\d{2} \d{3} \d{3}"
                 name="tel"
                 value={inputValue.tel}
                 onChange={handleOnChange}
@@ -285,20 +288,24 @@ const FileUploader = () => {
                     />
                   )}
 
-                  <p className="text-gray-500 text-sm">Aperçu QR Code</p>
+                  <p className="text-gray-500 text-sm font-montserrat font-normal">
+                    Aperçu QR Code
+                  </p>
                 </div>
                 <div className="w-40 h-40 border border-dashed border-gray-300 flex items-center justify-center rounded-md">
                   {qrCodePath ? (
                     <img src={qrCodePath} />
                   ) : !loading ? (
-                    <p className="text-gray-400">QR Code</p>
+                    <p className="text-gray-400 font-montserrat font-normal">
+                      QR Code
+                    </p>
                   ) : (
                     <Spinner />
                   )}
                 </div>
                 <div className="mt-4 w-full bg-amber-200 rounded-full h-2">
                   <div
-                    className="bg-amber-500 h-2 rounded-full"
+                    className="bg-amber-500 h-2 rounded-full font-montserrat font-normal"
                     style={{ width: `${progress ?? 0}%` }}
                   ></div>
                 </div>
@@ -318,15 +325,15 @@ const FileUploader = () => {
                 fileName={fileName}
               >
                 <button
-                  // disabled={!qrCodePath && !isEmptyObject(inputValue)}
-                  className="cursor-pointer mt-6 py-2.5 px-5 me-2 mb-2 text-sm font-medium  focus:outline-none bg-white rounded-lg border border-amber-300 hover:bg-amber-100 hover:text-amber-700 focus:z-10 focus:ring-4 focus:ring-amber-200"
+                  disabled={!qrCodePath && !isEmptyObject(inputValue)}
+                  className="mt-6 py-2.5 px-5 me-2 mb-2 text-sm font-medium  focus:outline-none bg-white rounded-lg border border-amber-300 hover:bg-amber-100 hover:text-amber-700 focus:z-10 focus:ring-4 focus:ring-amber-200 font-montserrat"
                 >
                   Download PDF
                 </button>
               </PDFDownloadLink>
               <button
                 type="submit"
-                className="mt-6 py-2.5 px-5 me-2 mb-2 text-sm font-medium  focus:outline-none bg-white rounded-lg border border-amber-300 hover:bg-amber-100 hover:text-amber-700 focus:z-10 focus:ring-4 focus:ring-amber-200"
+                className="mt-6 py-2.5 px-5 me-2 mb-2 text-sm font-medium  focus:outline-none bg-white rounded-lg border border-amber-300 hover:bg-amber-100 hover:text-amber-700 focus:z-10 focus:ring-4 focus:ring-amber-200 font-montserrat"
                 onClick={(event) => {
                   event.preventDefault(); // Prevent the default behavior
                   submitFile(); // Call the file submission logic

@@ -3,7 +3,7 @@ import React from "react";
 const FileInput = ({ onChange }) => {
   return (
     <div className="col-span-2">
-      <p className="block text-sm/6 font-medium text-gray-900 mb-2">
+      <p className="block text-sm/6 text-gray-900 mb-2 font-montserrat font-bold">
         Téléchargement de Fichier
       </p>
       <label htmlFor="file-input" className="sr-only cursor-pointer ">
